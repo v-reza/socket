@@ -4,6 +4,8 @@ const io = require("socket.io")(process.env.PORT || 5000, {
   },
 });
 
+io.set('origins', 'http://localhost:3000')
+
 let users = [];
 
 const addUser = (userId, socketId) => {
