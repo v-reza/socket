@@ -1,10 +1,10 @@
 const io = require("socket.io")(process.env.PORT || 5000, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
   },
 });
 
-io.set('origins', 'http://localhost:3000')
+io.set('origins', '*')
 
 let users = [];
 
