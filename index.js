@@ -1,8 +1,9 @@
-const io = require("socket.io")(process.env.PORT || 5000, {
-  cors: {
-    origin: "*",
-  },
-});
+const server = require('http').createServer()
+const options = {
+  cors: true,
+  origins: ["*"]
+}
+const io = require("socket.io")(process.env.PORT || 5000, options);
 
 io.set('origins', '*')
 
