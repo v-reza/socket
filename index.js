@@ -1,9 +1,9 @@
 const server = require('http').createServer()
 const options = {
   cors: true,
-  origins: ["*"]
+  origins: ["http://localhost:3000"]
 }
-const io = require("socket.io")(process.env.PORT || 5000, options);
+const io = require("socket.io")(server, options);
 
 io.set('origins', '*')
 
@@ -47,3 +47,5 @@ io.on("connection", (socket) => {
     removeUser(socket.id);
   });
 });
+
+server.listen(process.env.PORT || 5000)
