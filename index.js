@@ -1,11 +1,9 @@
 const server = require('http').createServer()
 const options = {
   cors: true,
-  origins: ["http://localhost:3000"]
+  origins: ["https://velkeymedia-client.netlify.app/"]
 }
 const io = require("socket.io")(server, options);
-
-io.set('origins', '*')
 
 let users = [];
 
