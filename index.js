@@ -40,6 +40,16 @@ io.on("connection", (socket) => {
     });
   });
 
+  //send message to anonymous
+  socket.on("sendConversations", ({conversationId, senderId, receiverId}) => {
+    const user = getUser(receiverId);
+    io.to(user.socketId).emit("getConversations", {
+      conversationId,
+      senderId,
+      receiverId
+    })
+  })
+
   //when disconnect
   socket.on("disconnect", () => {
     console.log("disconnect");
