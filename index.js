@@ -1,9 +1,9 @@
-const server = require('http').createServer()
+const server = require("http").createServer();
 const options = {
   cors: true,
   origin: "*",
-  origins: "*"
-}
+  origins: "*",
+};
 const io = require("socket.io")(server, options);
 
 let users = [];
@@ -24,31 +24,59 @@ const getUser = (userId) => {
 io.on("connection", (socket) => {
   //when connect
   console.log("a user connect");
+  // console.log("socket id: ", socket);
 
   //take userId and socketId from user
   socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
     io.emit("getUsers", users);
+    // io.emit("getHa", users)
   });
+
+  // io.emit("getHa", users)
 
   //send and get message
   socket.on("sendMessage", ({ senderId, receiverId, text }) => {
     const user = getUser(receiverId);
-    io.to(user.socketId).emit("getMessage", {
+    console.log("send message :", user);
+    io.to(user?.socketId).emit("getMessage", {
       senderId,
       text,
     });
   });
 
   //send message to anonymous
-  socket.on("sendConversations", ({conversationId, senderId, receiverId}) => {
+  socket.on("sendConversations", ({ conversationId, senderId, receiverId }) => {
     const user = getUser(receiverId);
-    io.to(user.socketId).emit("getConversations", {
+    console.log("conversation:", user);
+    io.to(user?.socketId).emit("getConversations", {
       conversationId,
       senderId,
+      receiverId,
+    });
+  });
+
+  socket.on("sendTest", ({ receiverId }) => {
+    const user = getUser(receiverId)
+    console.log("sendTest: " , user?.socketId)
+    // socket.broadcast.emit("getTest", {
+    //   receiverId
+    // })
+    io.to(user?.socketId).emit("getTest", {
+      user: user,
       receiverId
     })
   })
+
+  socket.on("sendTyping", ({ senderId, receiverId, isTyping }) => {
+    const user = getUser(receiverId);
+    console.log("sendTyping: ", user);
+    io.to(user?.socketId).emit("getTyping", {
+      senderId,
+      receiverId,
+      isTyping
+    });
+  });
 
   //when disconnect
   socket.on("disconnect", () => {
@@ -57,4 +85,4 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(process.env.PORT || 5000)
+server.listen(process.env.PORT || 5000);
