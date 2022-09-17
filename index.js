@@ -33,8 +33,6 @@ io.on("connection", (socket) => {
     // io.emit("getHa", users)
   });
 
-  // io.emit("getHa", users)
-
   //send and get message
   socket.on("sendMessage", ({ senderId, receiverId, text }) => {
     const user = getUser(receiverId);
@@ -57,16 +55,16 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendTest", ({ receiverId }) => {
-    const user = getUser(receiverId)
-    console.log("sendTest: " , user?.socketId)
+    const user = getUser(receiverId);
+    console.log("sendTest: ", user?.socketId);
     // socket.broadcast.emit("getTest", {
     //   receiverId
     // })
     io.to(user?.socketId).emit("getTest", {
       user: user,
-      receiverId
-    })
-  })
+      receiverId,
+    });
+  });
 
   socket.on("sendTyping", ({ senderId, receiverId, isTyping }) => {
     const user = getUser(receiverId);
@@ -74,8 +72,28 @@ io.on("connection", (socket) => {
     io.to(user?.socketId).emit("getTyping", {
       senderId,
       receiverId,
-      isTyping
+      isTyping,
     });
+  });
+
+  socket.on("sendNotifications", ({ senderId, receiverId, text }) => {
+    const user = getUser(receiverId);
+    console.log("sendNotifications: ", user);
+    io.to(user?.socketId).emit("getNotifications", {
+      senderId,
+      receiverId,
+      text,
+    });
+    io.to(user?.socketId).emit("isNewNotifications", {
+      isNew: true,
+    });
+  });
+
+  socket.on("openNotifications", ({ senderId }) => {
+    const user = getUser(senderId)
+    io.to(user?.socketId).emit("isNewNotifications", {
+      isNew: false,
+    })
   });
 
   //when disconnect
